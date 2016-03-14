@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snowflake.Api", "Snowflake\Snowflake.Api.csproj", "{2BB8F811-6556-4C29-BAAE-1D7C00070462}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snowflake.Core", "Snowflake.Core\Snowflake.Core.csproj", "{0CBDCFDA-FE4C-4723-AAEE-E30F8F5B3635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snowflake.Data", "Snowflake.Data\Snowflake.Data.csproj", "{E31169DB-8C24-4AC0-8C75-A3E8FAE3FBB8}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Snowflake.Web", "Snowflake.Web\", "{667F61D4-6CA7-42B5-8EC8-4D2278FAF5A4}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_59835"
+		Debug.AspNetCompiler.PhysicalPath = "Snowflake.Web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59835\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_59835"
+		Release.AspNetCompiler.PhysicalPath = "Snowflake.Web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59835\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "59835"
+		SlnRelativePath = "Snowflake.Web\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BB8F811-6556-4C29-BAAE-1D7C00070462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BB8F811-6556-4C29-BAAE-1D7C00070462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BB8F811-6556-4C29-BAAE-1D7C00070462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BB8F811-6556-4C29-BAAE-1D7C00070462}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CBDCFDA-FE4C-4723-AAEE-E30F8F5B3635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CBDCFDA-FE4C-4723-AAEE-E30F8F5B3635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CBDCFDA-FE4C-4723-AAEE-E30F8F5B3635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CBDCFDA-FE4C-4723-AAEE-E30F8F5B3635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31169DB-8C24-4AC0-8C75-A3E8FAE3FBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31169DB-8C24-4AC0-8C75-A3E8FAE3FBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31169DB-8C24-4AC0-8C75-A3E8FAE3FBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31169DB-8C24-4AC0-8C75-A3E8FAE3FBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{667F61D4-6CA7-42B5-8EC8-4D2278FAF5A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{667F61D4-6CA7-42B5-8EC8-4D2278FAF5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{667F61D4-6CA7-42B5-8EC8-4D2278FAF5A4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{667F61D4-6CA7-42B5-8EC8-4D2278FAF5A4}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

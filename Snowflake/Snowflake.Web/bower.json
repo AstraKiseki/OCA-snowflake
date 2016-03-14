@@ -1,0 +1,12 @@
+{
+  "name": "Snowflake.Web",
+  "homepage": "https://github.com/AstraKiseki/OCA-snowflake",
+  "authors": [
+    "Rebecca Mooney <astrakiseki@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true
+}
