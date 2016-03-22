@@ -31,7 +31,7 @@ namespace Snowflake.Data.Infrastructure
             var snowflakeUser = new SnowflakeUser
             {
                 UserName = model.Username,
-                Email = model.EmailAddress,
+                Email = model.Email,
             };
 
             var result = await _userManager.CreateAsync(snowflakeUser, model.Password);

@@ -1,0 +1,14 @@
+﻿body {
+    background-color:#5cd2e4;
+    text-align: center;
+}
+
+.main container container{
+    text-align: center;
+}
+
+.form-horizontal {
+    display: inline-block;
+    background-color: #14daeb;
+    text-align: center;
+}

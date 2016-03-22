@@ -14,7 +14,7 @@ namespace Snowflake.Core.Models
         public string Username { get; set; }
 
         [Required]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
 
         [Required]
         [StringLength(64, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
