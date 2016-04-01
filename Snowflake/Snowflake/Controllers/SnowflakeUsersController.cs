@@ -1,36 +1,39 @@
-﻿using System;
+﻿using AutoMapper;
+using Snowflake.Core.Domain;
+using Snowflake.Core.Infrastructure;
+using Snowflake.Core.Models;
+using Snowflake.Core.Repository;
+using Snowflake.Infrastructure;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Snowflake.Core.Domain;
-using Snowflake.Data.Infrastructure;
-using Snowflake.Core.Models;
-using AutoMapper;
 
 namespace Snowflake.Api.Controllers
 {
-    public class SnowflakeUsersController : ApiController
+    public class UsersController : BaseApiController
     {
-        private SnowflakeDataContext db = new SnowflakeDataContext();
+        private readonly IUnitOfWork _unitOfWork;
 
-        // GET: api/SnowflakeUsers
-        public IEnumerable<SnowflakeUserModel> GetSnowflakeUsers()
+        public UsersController(IUnitOfWork unitOfWork, ISnowflakeUserRepository userRepository) : base(userRepository)
         {
-            return Mapper.Map<IEnumerable<SnowflakeUserModel>>(db.Users);
+            _unitOfWork = unitOfWork;
         }
 
-        // GET: api/SnowflakeUsers/5
-        [ResponseType(typeof(SnowflakeUser))]
-        public IHttpActionResult GetSnowflakeUser(int id)
+        // GET: api/Users
+        public IEnumerable<SnowflakeUserModel> GetUsers()
         {
-            SnowflakeUser snowflakeUser = db.Users.Find(id);
-            if (snowflakeUser == null)
+            return Mapper.Map<IEnumerable<SnowflakeUserModel>>(_snowflakeUserRepository.GetAll());
+        }
+
+        // GET: api/Users/5
+        [ResponseType(typeof(SnowflakeUserModel))]
+        public IHttpActionResult GetUser(int id)
+        {
+            SnowflakeUser User = _snowflakeUserRepository.GetById(id);
+
+            if (User == null)
             {
                 return NotFound();
             }
@@ -38,31 +41,31 @@ namespace Snowflake.Api.Controllers
             return Ok(Mapper.Map<SnowflakeUserModel>(User));
         }
 
-        // PUT: api/SnowflakeUsers/5
+        // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutSnowflakeUser(int id, SnowflakeUserModel modelSnowflakeUser)
+        public IHttpActionResult PutUser(int id, SnowflakeUserModel modelUser)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != modelSnowflakeUser.Id)
+            if (id != modelUser.Id)
             {
                 return BadRequest();
             }
 
-            var dbSnowflakeUser = db.Users.Find(id);
-            dbSnowflakeUser.Update(modelSnowflakeUser);
-            db.Entry(dbSnowflakeUser).State = EntityState.Modified;
+            var dbUser = _snowflakeUserRepository.GetById(id);
+            dbUser.Update(modelUser);
+            _snowflakeUserRepository.Update(dbUser);
 
             try
             {
-                db.SaveChanges();
+                _unitOfWork.Commit();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
-                if (!SnowflakeUserExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -75,53 +78,45 @@ namespace Snowflake.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/SnowflakeUsers
-        [ResponseType(typeof(SnowflakeUser))]
-        public IHttpActionResult PostSnowflakeUser(SnowflakeUserModel snowflakeUser)
+        // POST: api/Users
+        [ResponseType(typeof(SnowflakeUserModel))]
+        public IHttpActionResult PostUser(SnowflakeUserModel User)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var newSnowflakeUser = new SnowflakeUser();
-            newSnowflakeUser.Update(snowflakeUser);
 
-            db.Users.Add(newSnowflakeUser);
-            db.SaveChanges();
+            var newUser = new SnowflakeUser();
+            newUser.Update(User);
 
-            snowflakeUser.Id = newSnowflakeUser.Id;
+            _snowflakeUserRepository.Add(newUser);
+            _unitOfWork.Commit();
 
-            return CreatedAtRoute("DefaultApi", new { id = snowflakeUser.Id }, snowflakeUser);
+            User.Id = newUser.Id;
+
+            return CreatedAtRoute("DefaultApi", new { id = User.Id }, User);
         }
 
-        // DELETE: api/SnowflakeUsers/5
-        [ResponseType(typeof(SnowflakeUser))]
-        public IHttpActionResult DeleteSnowflakeUser(int id)
+        // DELETE: api/Users/5
+        [ResponseType(typeof(SnowflakeUserModel))]
+        public IHttpActionResult DeleteUser(int id)
         {
-            SnowflakeUser snowflakeUser = db.Users.Find(id);
-            if (snowflakeUser == null)
+            SnowflakeUser User = _snowflakeUserRepository.GetById(id);
+            if (User == null)
             {
                 return NotFound();
             }
 
-            db.Users.Remove(snowflakeUser);
-            db.SaveChanges();
+            _snowflakeUserRepository.Delete(User);
+            _unitOfWork.Commit();
 
-            return Ok(Mapper.Map<SnowflakeUserModel>(snowflakeUser));
+            return Ok(Mapper.Map<SnowflakeUserModel>(User));
         }
 
-        protected override void Dispose(bool disposing)
+        private bool UserExists(int id)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool SnowflakeUserExists(int id)
-        {
-            return db.Users.Count(e => e.Id == id) > 0;
+            return _snowflakeUserRepository.Any(u => u.Id == id);
         }
     }
 }

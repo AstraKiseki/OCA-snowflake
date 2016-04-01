@@ -1,29 +1,73 @@
-﻿<nav class="navbar navbar-default" id="navbar">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#/home">
-                <img src="" />
-            </a>
+﻿    <nav class="navbar navbar-default" id="navbar">
+        <div class="homeContainer">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#/home">
+                        <i class="fa fa-star"></i>
+                    </a>
+                </div>
+                <p id="loginhere"> Need to <a href="/#/login">log-in?</a>  Or just go to your <a href="/#/app/profile/information">profile?</a></p>
+            </div>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form id="signin" class="navbar-form navbar-right" role="form">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input type="text" class="form-control" placeholder="UserName" ng-model="loginData.username" />
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    <input type="password" class="form-control" placeholder="Password" ng-model="loginData.password" />
-                </div>
-                <button type="submit" class="btn btn-success" ng-click="login()">Sign in</button>
-                <p id="registerhere">New to Snowflake? <a href="/#/register">Register Here.</a></p>
-            </form>
+    </nav>
+<div class="container marketing">
+
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+        <div class="col-lg-4">
+            <h2><i class="fa fa-commenting fa-4"></i> Got a thought?  Post it!</h2>
+            <p>Got something on your mind?  A bit of poetry, some random thoughts, or just a wish or two to get someone's attention?  Submit it to the snowstorm and peer around at other people's heads!</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+            <h2><i class="fa fa-comments-o fa-4"></i> Catch a snowflake and have a chat!</h2>
+            <p>If you like someone else's thought, and they like one of yours, you can strike up a conversation, letting your personalities shine!</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+            <h2><i class="fa fa-magic fa-4"></i> Sort Though the Positive and Negative! (Eventually)</h2>
+            <p>Ever had those days where the slightest touch of sadness will send you spiralling down?  Snowflake is working with an API to help sort though every thought so that you can sift between the positive, the negative, or all thoughts!</p>
+        </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+    <!-- START THE FEATURETTES -->
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">What is Snowflake?  <span class="text-muted">(Besides ice crystals from the sky.)</span></h2>
+            <p class="lead">Snowflake is a site intended for people to toss thoughts out into the internet, and start conversations.  Think of it as Tinder for thoughts.</p>
         </div>
     </div>
-</nav>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7 col-md-push-5">
+            <h2 class="featurette-heading">So how does it work? <span class="text-muted">See for yourself.</span></h2>
+            <p class="lead">You post a thought off your profile.  From there, you explore thoughts others have posted and sort them between ones you like and ones you dislike.  When someone likes your thought, it provides the chance for you two to start talking in private.  (See, it's Tinder.)</p>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">So why no pictures? <span class="text-muted">Or other specific information?</span></h2>
+            <p class="lead">The whole idea of Snowflake is to remove obvious biases such as appearance and perceived gender from the starting equation and break the ice by seeing what is in someone's head.</p>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Interested?</h2>
+            <p class="lead">Then why not <a href="/#/register">register</a> now?</p>
+        </div>
+    </div>
+
+<hr class="featurette-divider">
+    <!-- FOOTER -->
+    <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2016 R. Mooney &middot; <a href="/#/credits">Credits</a></p>
+    </footer>
+</div><!-- /.container -->

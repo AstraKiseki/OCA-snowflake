@@ -19,5 +19,7 @@ namespace Snowflake.Core.Models
             public int? NumberOfFlags { get; set; }
             public Sentiment Sentiment { get; set; }
             public string Language { get; set; }
+
+            public SnowflakeUserModel User { get; set; }
     }
 }

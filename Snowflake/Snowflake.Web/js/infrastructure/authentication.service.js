@@ -8,6 +8,7 @@
 
         if (token) {
             state.authorized = true;
+            state.username = localStorageService.get('username').username;
         }
     }
 
@@ -35,8 +36,12 @@
             localStorageService.set('token', {
                 token: response.access_token
             });
+            localStorageService.set('username', {
+                username: loginData.username
+            });
 
             state.authorized = true;
+            state.username = loginData.username;
 
             deferred.resolve(response);
         }).error(function (err, status) {

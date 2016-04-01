@@ -8,5 +8,11 @@
   "main": "",
   "moduleType": [],
   "license": "MIT",
-  "private": true
+  "private": true,
+  "resolutions": {
+    "angular": "^1.0.8"
+  },
+  "dependencies": {
+    "angular-bootstrap-simple-chat": "^0.4.0"
+  }
 }

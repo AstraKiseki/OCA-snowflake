@@ -1,0 +1,30 @@
+﻿<div class="thoughtsContainer">
+    <h1>View Submissions</h1>
+    <div class="alert alert-info" ng-hide="thoughts.length">
+        <strong>Woohoo!</strong> You've managed to judge everybody around you :)
+    </div>
+    <div class="row" ng-show="thoughts.length">
+        <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12" ng-repeat="thought in thoughts">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>{{thought.User.UserName}}</span>    
+                    </div>
+                    <div class="panel-body">
+                        <span>{{thought.Text}}</span>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn btn-danger btn-block" ng-click="dislike(thought)"><i class="fa fa-thumbs-o-down"></i> Let it Go!</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn btn-success btn-block" ng-click="like(thought)"><i class="fa fa-thumbs-o-up"></i> Catch it!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

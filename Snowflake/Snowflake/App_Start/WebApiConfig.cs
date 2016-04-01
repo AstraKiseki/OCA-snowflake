@@ -30,11 +30,12 @@ namespace Snowflake.Api
         public static void CreateMaps()
         {
             Mapper.CreateMap<Choice, ChoiceModel>();
-            Mapper.CreateMap<Conversation, ConversationModel>();
+            Mapper.CreateMap<Conversation, ConversationModel>().ForMember("Users", opt=>opt.MapFrom(src=>src.Participations.Select(p => p.User)));
             Mapper.CreateMap<Message, MessageModel>();
             Mapper.CreateMap<Participation, ParticipationModel>();
             Mapper.CreateMap<SnowflakeUser, SnowflakeUserModel>();
             Mapper.CreateMap<Thought, ThoughtModel>();
+
         }
     }
 }

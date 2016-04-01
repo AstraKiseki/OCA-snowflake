@@ -3,14 +3,38 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
+    <link href="css/app.css" rel="stylesheet" />
+
+    <link href="css/app/conversation/conversation.css" rel="stylesheet" />
+    <link href="css/app/profile/profile.css" rel="stylesheet" />
+    <link href="css/app/thoughts/thoughts.css" rel="stylesheet" />
+
+    <link href="css/home/home.css" rel="stylesheet" />
+
+    <link href="css/register/register.css" rel="stylesheet" />
+
+    <link href="css/login/login.css" rel="stylesheet" />
+
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="bower_components/angular-bootstrap-simple-chat/src/css/style.css" />
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="bower_components/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
+    <link rel="shortcut icon" href="img/snowflakeicon.png" />
 </head>
 <body>
 
     <div ui-view></div>
 
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-bootstrap-simple-chat/src/scripts/index.js"></script>
+    <script src="bower_components/angular-bootstrap-simple-chat/sample/chatTemplate.js"></script>
 
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -24,10 +48,23 @@
 
     <script src="js/register/register.ctrl.js"></script>
 
+    <script src="js/login/login.ctrl.js"></script>
+
     <script src="js/home/home.ctrl.js"></script>
 
-    <script src="js/app/card/cardstate.ctrl.js"></script>
-    <script src="js/app/card/cardstack.ctrl.js"></script>
-    <script src="js/app/card/throwconfidence.ctrl.js"></script>
+    <script src="js/app/conversation/conversation.master.ctrl.js"></script>
+    <script src="js/app/conversation/conversation.detail.ctrl.js"></script>
+
+    <script src="js/app/profile/profile.editThought.ctrl.js"></script>
+    <script src="js/app/profile/profile.information.ctrl.js"></script>
+    <script src="js/app/profile/profile.thoughts.ctrl.js"></script>
+    <script src="js/app/profile/profile.newThought.ctrl.js"></script>
+
+    <script src="js/resources/conversation.resource.js"></script>
+    <script src="js/resources/messages.resource.js"></script>
+    <script src="js/resources/thoughts.resource.js"></script>
+    <script src="js/resources/user.resource.js"></script>
+
+    <script src="js/app/thoughts/thoughts.ctrl.js"></script>
 </body>
 </html>

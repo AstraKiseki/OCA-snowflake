@@ -33,9 +33,6 @@ namespace Snowflake.Core.Domain
         {
             Id = modelSnowflakeUser.Id;
             UserName = modelSnowflakeUser.UserName;
-            PasswordHash = modelSnowflakeUser.PasswordHash;
-            SecurityStamp = modelSnowflakeUser.SecurityStamp;
-            Email = modelSnowflakeUser.Email;
             NumberOfFlags = modelSnowflakeUser.NumberOfFlags;
             ConnectionOpened = modelSnowflakeUser.ConnectionOpened;
         }

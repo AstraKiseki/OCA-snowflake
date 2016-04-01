@@ -1,0 +1,5 @@
+C:\dev\origin\OCA-snowflake\ExercismLeap\bin\Debug\ExercismLeap.dll
+C:\dev\origin\OCA-snowflake\ExercismLeap\bin\Debug\ExercismLeap.pdb
+C:\dev\origin\OCA-snowflake\ExercismLeap\obj\Debug\ExercismLeap.csprojResolveAssemblyReference.cache
+C:\dev\origin\OCA-snowflake\ExercismLeap\obj\Debug\ExercismLeap.dll
+C:\dev\origin\OCA-snowflake\ExercismLeap\obj\Debug\ExercismLeap.pdb

@@ -4,11 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Snowflake.Core.Models;
+using System.Collections.ObjectModel;
 
 namespace Snowflake.Core.Domain
 {
    public class Conversation
     {
+
+        public Conversation()
+        {
+            Messages = new Collection<Message>();
+            Participations = new Collection<Participation>();
+        }
         // Primary Key
         public int ConversationId { get; set; }
 

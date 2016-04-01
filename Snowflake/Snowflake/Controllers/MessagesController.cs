@@ -1,41 +1,46 @@
-﻿using System;
+﻿using AutoMapper;
+using Snowflake.Core.Domain;
+using Snowflake.Core.Infrastructure;
+using Snowflake.Core.Models;
+using Snowflake.Core.Repository;
+using Snowflake.Infrastructure;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Snowflake.Core.Domain;
-using Snowflake.Data.Infrastructure;
-using Snowflake.Core.Models;
-using AutoMapper;
 
 namespace Snowflake.Api.Controllers
 {
-    public class MessagesController : ApiController
+    public class MessagesController : BaseApiController
     {
-        private SnowflakeDataContext db = new SnowflakeDataContext();
+        private readonly IMessageRepository _MessageRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public MessagesController(IMessageRepository MessageRepository, IUnitOfWork unitOfWork, ISnowflakeUserRepository userRepository) : base(userRepository)
+        {
+            _MessageRepository = MessageRepository;
+            _unitOfWork = unitOfWork;
+        }
 
         // GET: api/Messages
         public IEnumerable<MessageModel> GetMessages()
         {
-            return Mapper.Map<IEnumerable<MessageModel>>(db.Messages);
+            return Mapper.Map<IEnumerable<MessageModel>>(_MessageRepository.GetAll());
         }
 
         // GET: api/Messages/5
         [ResponseType(typeof(MessageModel))]
         public IHttpActionResult GetMessage(int id)
         {
-            Message message = db.Messages.Find(id);
-            if (message == null)
+            Message Message = _MessageRepository.GetById(id);
+
+            if (Message == null)
             {
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<MessageModel>(message));
+            return Ok(Mapper.Map<MessageModel>(Message));
         }
 
         // PUT: api/Messages/5
@@ -52,15 +57,15 @@ namespace Snowflake.Api.Controllers
                 return BadRequest();
             }
 
-            var dbMessage = db.Messages.Find(id);
+            var dbMessage = _MessageRepository.GetById(id);
             dbMessage.Update(modelMessage);
-            db.Entry(dbMessage).State = EntityState.Modified;
+            _MessageRepository.Update(dbMessage);
 
             try
             {
-                db.SaveChanges();
+                _unitOfWork.Commit();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!MessageExists(id))
                 {
@@ -77,51 +82,44 @@ namespace Snowflake.Api.Controllers
 
         // POST: api/Messages
         [ResponseType(typeof(Message))]
-        public IHttpActionResult PostMessage(MessageModel message)
+        public IHttpActionResult PostMessage(MessageModel Message)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var newMessage = new Message();
-            newMessage.Update(message);
+            newMessage.Update(Message);
+            newMessage.User = CurrentUser;
 
-            db.Messages.Add(newMessage);
-            db.SaveChanges();
+            _MessageRepository.Add(newMessage);
+            _unitOfWork.Commit();
 
-            message.MessageId = newMessage.MessageId;
+            Message.MessageId = newMessage.MessageId;
 
-            return CreatedAtRoute("DefaultApi", new { id = message.MessageId }, message);
+            return CreatedAtRoute("DefaultApi", new { id = Message.MessageId }, Message);
         }
 
         // DELETE: api/Messages/5
         [ResponseType(typeof(Message))]
         public IHttpActionResult DeleteMessage(int id)
         {
-            Message message = db.Messages.Find(id);
-            if (message == null)
+            Message Message = _MessageRepository.GetById(id);
+            if (Message == null)
             {
                 return NotFound();
             }
 
-            db.Messages.Remove(message);
-            db.SaveChanges();
+            _MessageRepository.Delete(Message);
+            _unitOfWork.Commit();
 
-            return Ok(Mapper.Map<MessageModel>(message));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return Ok(Mapper.Map<MessageModel>(Message));
         }
 
         private bool MessageExists(int id)
         {
-            return db.Messages.Count(e => e.MessageId == id) > 0;
+            return _MessageRepository.Any(r => r.MessageId == id);
         }
     }
 }

@@ -1,0 +1,18 @@
+﻿<div class="conversationContainer">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Conversation Id</th>
+                <th>Last Message</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="conversation in conversations">
+                <td>{{conversation.ConversationId}}</td>
+                <td>{{conversation.Messages[0].Text}}</td>
+                <td><a class="btn btn-info btn-xs" href="#/app/conversation/detail/{{conversation.ConversationId}}"><i class="fa fa-group"></i> Join!</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

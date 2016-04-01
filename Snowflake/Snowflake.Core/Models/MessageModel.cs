@@ -18,5 +18,22 @@ namespace Snowflake.Core.Models
         public int MessageOrder { get; set; }
         public DateTime Timestamp { get; set; }
         public string Text { get; set; }
+
+        public SnowflakeUserModel User { get; set; }
+
+        public string username
+        {
+            get
+            {
+                return User?.UserName;
+            }
+        }
+        public string content
+        {
+            get
+            {
+                return Text;
+            }
+        }
     }
 }

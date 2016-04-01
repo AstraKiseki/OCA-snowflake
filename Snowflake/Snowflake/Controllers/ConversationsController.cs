@@ -1,41 +1,55 @@
-﻿using System;
+﻿using AutoMapper;
+using Snowflake.Core.Domain;
+using Snowflake.Core.Infrastructure;
+using Snowflake.Core.Models;
+using Snowflake.Core.Repository;
+using Snowflake.Infrastructure;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Snowflake.Core.Domain;
-using Snowflake.Data.Infrastructure;
-using AutoMapper;
-using Snowflake.Core.Models;
 
 namespace Snowflake.Api.Controllers
 {
-    public class ConversationsController : ApiController
+    public class ConversationsController : BaseApiController
     {
-        private SnowflakeDataContext db = new SnowflakeDataContext();
+        private readonly IConversationRepository _ConversationRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ConversationsController(IConversationRepository ConversationRepository, IUnitOfWork unitOfWork, ISnowflakeUserRepository userRepository) : base(userRepository)
+        {
+            _ConversationRepository = ConversationRepository;
+            _unitOfWork = unitOfWork;
+        }
 
         // GET: api/Conversations
         public IEnumerable<ConversationModel> GetConversations()
         {
-            return Mapper.Map<IEnumerable<ConversationModel>>(db.Conversations);
+            return Mapper.Map<IEnumerable<ConversationModel>>(_ConversationRepository.GetWhere(c => c.Participations.Any(p => p.UserId == CurrentUser.Id)));
+        }
+
+        [Route("api/conversations/{conversationId}/messages")]
+        public IEnumerable<MessageModel> GetMessagesForConversation(int conversationId)
+        {
+            return Mapper.Map<IEnumerable<MessageModel>>(
+                _ConversationRepository.GetById(conversationId).Messages
+            );
         }
 
         // GET: api/Conversations/5
         [ResponseType(typeof(ConversationModel))]
         public IHttpActionResult GetConversation(int id)
         {
-            Conversation conversation = db.Conversations.Find(id);
-            if (conversation == null)
+            Conversation Conversation = _ConversationRepository.GetById(id);
+
+            if (Conversation == null)
             {
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<ConversationModel>(conversation));
+            return Ok(Mapper.Map<ConversationModel>(Conversation));
         }
 
         // PUT: api/Conversations/5
@@ -51,15 +65,16 @@ namespace Snowflake.Api.Controllers
             {
                 return BadRequest();
             }
-            var dbConversation = db.Conversations.Find(id);
+
+            var dbConversation = _ConversationRepository.GetById(id);
             dbConversation.Update(modelConversation);
-            db.Entry(dbConversation).State = EntityState.Modified;
+            _ConversationRepository.Update(dbConversation);
 
             try
             {
-                db.SaveChanges();
+                _unitOfWork.Commit();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ConversationExists(id))
                 {
@@ -76,51 +91,43 @@ namespace Snowflake.Api.Controllers
 
         // POST: api/Conversations
         [ResponseType(typeof(Conversation))]
-        public IHttpActionResult PostConversation(ConversationModel conversation)
+        public IHttpActionResult PostConversation(ConversationModel Conversation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var newConversation = new Conversation();
-            newConversation.Update(conversation);
+            newConversation.Update(Conversation);
 
-            db.Conversations.Add(newConversation);
-            db.SaveChanges();
+            _ConversationRepository.Add(newConversation);
+            _unitOfWork.Commit();
 
-            conversation.ConversationId = newConversation.ConversationId;
+            Conversation.ConversationId = newConversation.ConversationId;
 
-            return CreatedAtRoute("DefaultApi", new { id = conversation.ConversationId }, conversation);
+            return CreatedAtRoute("DefaultApi", new { id = Conversation.ConversationId }, Conversation);
         }
 
         // DELETE: api/Conversations/5
         [ResponseType(typeof(Conversation))]
         public IHttpActionResult DeleteConversation(int id)
         {
-            Conversation conversation = db.Conversations.Find(id);
-            if (conversation == null)
+            Conversation Conversation = _ConversationRepository.GetById(id);
+            if (Conversation == null)
             {
                 return NotFound();
             }
 
-            db.Conversations.Remove(conversation);
-            db.SaveChanges();
+            _ConversationRepository.Delete(Conversation);
+            _unitOfWork.Commit();
 
-            return Ok(Mapper.Map<ConversationModel>(conversation));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return Ok(Mapper.Map<ConversationModel>(Conversation));
         }
 
         private bool ConversationExists(int id)
         {
-            return db.Conversations.Count(e => e.ConversationId == id) > 0;
+            return _ConversationRepository.Any(r => r.ConversationId == id);
         }
     }
 }

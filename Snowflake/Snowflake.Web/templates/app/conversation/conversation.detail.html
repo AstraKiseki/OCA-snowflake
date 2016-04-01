@@ -1,0 +1,13 @@
+﻿<div class="clearfix">
+    <irontec-simple-chat messages="conversation.Messages"
+                         username="username"
+                         input-placeholder-text="You can write here"
+                         submit-button-text="Send your message"
+                         title="Conversation between"
+                         theme="material"
+                         submit-function="sendMessage"
+                         visible="true"
+                         style="width: 100%">
+    </irontec-simple-chat>
+</div>
+<pre>{{conversation | json}}</pre>

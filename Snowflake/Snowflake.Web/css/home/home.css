@@ -1,0 +1,7 @@
+﻿.container marketing {
+    background-image: url('../../img/snow-forest.jpg');
+    background-size:cover;
+}
+.nav navbar-default {
+        background-image: url('../../img/snow-forest.jpg');
+}

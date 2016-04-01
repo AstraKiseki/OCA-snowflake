@@ -1,35 +1,47 @@
-﻿using System;
+﻿using AutoMapper;
+using Snowflake.Core.Domain;
+using Snowflake.Core.Infrastructure;
+using Snowflake.Core.Models;
+using Snowflake.Core.Repository;
+using Snowflake.Infrastructure;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Snowflake.Core.Domain;
-using Snowflake.Data.Infrastructure;
-using Snowflake.Core.Models;
-using AutoMapper;
 
 namespace Snowflake.Api.Controllers
 {
-    public class ThoughtsController : ApiController
+    public class ThoughtsController : BaseApiController
     {
-        private SnowflakeDataContext db = new SnowflakeDataContext();
+        private readonly IThoughtRepository _thoughtRepository;
+        private readonly IChoiceRepository _choiceRepository;
+        private readonly IConversationRepository _conversationRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ThoughtsController(IThoughtRepository thoughtRepository, IConversationRepository conversationRepository, IChoiceRepository choiceRepository, IUnitOfWork unitOfWork, ISnowflakeUserRepository userRepository) : base(userRepository)
+        {
+            _thoughtRepository = thoughtRepository;
+            _choiceRepository = choiceRepository;
+            _conversationRepository = conversationRepository;
+            _unitOfWork = unitOfWork;
+        }
 
         // GET: api/Thoughts
         public IEnumerable<ThoughtModel> GetThoughts()
         {
-            return Mapper.Map<IEnumerable<ThoughtModel>>(db.Thoughts);
+            return Mapper.Map<IEnumerable<ThoughtModel>>(
+                _thoughtRepository.GetWhere(t => t.UserId != CurrentUser.Id && t.Choices.All(c => c.UserId != CurrentUser.Id))
+            );
         }
 
         // GET: api/Thoughts/5
         [ResponseType(typeof(ThoughtModel))]
         public IHttpActionResult GetThought(int id)
         {
-            Thought thought = db.Thoughts.Find(id);
+            Thought thought = _thoughtRepository.GetById(id);
+
             if (thought == null)
             {
                 return NotFound();
@@ -52,15 +64,15 @@ namespace Snowflake.Api.Controllers
                 return BadRequest();
             }
 
-            var dbThought = db.Thoughts.Find(id);
+            var dbThought = _thoughtRepository.GetById(id);
             dbThought.Update(modelThought);
-            db.Entry(dbThought).State = EntityState.Modified;
+            _thoughtRepository.Update(dbThought);
 
             try
             {
-                db.SaveChanges();
+                _unitOfWork.Commit();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ThoughtExists(id))
                 {
@@ -86,9 +98,10 @@ namespace Snowflake.Api.Controllers
 
             var newThought = new Thought();
             newThought.Update(thought);
+            newThought.User = CurrentUser;
 
-            db.Thoughts.Add(newThought);
-            db.SaveChanges();
+            _thoughtRepository.Add(newThought);
+            _unitOfWork.Commit();
 
             thought.ThoughtId = newThought.ThoughtId;
 
@@ -99,30 +112,69 @@ namespace Snowflake.Api.Controllers
         [ResponseType(typeof(Thought))]
         public IHttpActionResult DeleteThought(int id)
         {
-            Thought thought = db.Thoughts.Find(id);
+            Thought thought = _thoughtRepository.GetById(id);
             if (thought == null)
             {
                 return NotFound();
             }
 
-            db.Thoughts.Remove(thought);
-            db.SaveChanges();
+            _thoughtRepository.Delete(thought);
+            _unitOfWork.Commit();
 
             return Ok(Mapper.Map<ThoughtModel>(thought));
         }
 
-        protected override void Dispose(bool disposing)
+        [Route("api/thoughts/{thoughtId}/like")]
+        public IHttpActionResult LikeThought(int thoughtId)
         {
-            if (disposing)
+            var choice = new Choice
             {
-                db.Dispose();
+                ThoughtId = thoughtId,
+                UserId = CurrentUser.Id,
+                Chosen = true 
+            };
+
+            _choiceRepository.Add(choice);
+
+            _unitOfWork.Commit();
+
+            var thought = _thoughtRepository.GetById(thoughtId);
+
+            if(CurrentUser.Thoughts.Any(t => t.Choices.Any(c => c.UserId == thought.UserId)))
+            {
+                var conversation = new Conversation();
+
+                conversation.Participations.Add(new Participation { User = CurrentUser });
+                conversation.Participations.Add(new Participation { User = choice.Thought.User });
+
+                _conversationRepository.Add(conversation);
+
+                _unitOfWork.Commit();
             }
-            base.Dispose(disposing);
+
+            return Ok();
+        }
+
+        [Route("api/thoughts/{thoughtId}/dislike")]
+        public IHttpActionResult DislikeThought(int thoughtId)
+        {
+            var choice = new Choice
+            {
+                ThoughtId = thoughtId,
+                UserId = CurrentUser.Id,
+                Chosen = false
+            };
+
+            _choiceRepository.Add(choice);
+
+            _unitOfWork.Commit();
+
+            return Ok();
         }
 
         private bool ThoughtExists(int id)
         {
-            return db.Thoughts.Count(e => e.ThoughtId == id) > 0;
+            return _thoughtRepository.Any(r => r.ThoughtId == id);
         }
     }
 }

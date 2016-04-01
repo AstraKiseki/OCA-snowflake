@@ -14,9 +14,6 @@ namespace Snowflake.Core.Models
 
         // Properties
         public string UserName { get; set; }
-        public string PasswordHash { get; set; }
-        public string SecurityStamp { get; set; }
-        public string Email { get; set; }
         public int? NumberOfFlags { get; set; }
         public bool ConnectionOpened { get; set; }
 

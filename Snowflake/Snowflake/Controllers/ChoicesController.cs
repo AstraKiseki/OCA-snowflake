@@ -1,41 +1,46 @@
-﻿using System;
+﻿using AutoMapper;
+using Snowflake.Core.Domain;
+using Snowflake.Core.Infrastructure;
+using Snowflake.Core.Models;
+using Snowflake.Core.Repository;
+using Snowflake.Infrastructure;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Snowflake.Core.Domain;
-using Snowflake.Data.Infrastructure;
-using AutoMapper;
-using Snowflake.Core.Models;
 
 namespace Snowflake.Api.Controllers
 {
-    public class ChoicesController : ApiController
+    public class ChoicesController : BaseApiController
     {
-        private SnowflakeDataContext db = new SnowflakeDataContext();
+        private readonly IChoiceRepository _ChoiceRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ChoicesController(IChoiceRepository ChoiceRepository, IUnitOfWork unitOfWork, ISnowflakeUserRepository userRepository) : base(userRepository)
+        {
+            _ChoiceRepository = ChoiceRepository;
+            _unitOfWork = unitOfWork;
+        }
 
         // GET: api/Choices
         public IEnumerable<ChoiceModel> GetChoices()
         {
-            return Mapper.Map<IEnumerable<ChoiceModel>>(db.Choices);
+            return Mapper.Map<IEnumerable<ChoiceModel>>(_ChoiceRepository.GetAll());
         }
 
         // GET: api/Choices/5
         [ResponseType(typeof(ChoiceModel))]
         public IHttpActionResult GetChoice(int id)
         {
-            Choice choice = db.Choices.Find(id);
-            if (choice == null)
+            Choice Choice = _ChoiceRepository.GetById(id);
+
+            if (Choice == null)
             {
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<ChoiceModel>(choice));
+            return Ok(Mapper.Map<ChoiceModel>(Choice));
         }
 
         // PUT: api/Choices/5
@@ -52,15 +57,15 @@ namespace Snowflake.Api.Controllers
                 return BadRequest();
             }
 
-            var dbChoice = db.Choices.Find(id);
+            var dbChoice = _ChoiceRepository.GetById(id);
             dbChoice.Update(modelChoice);
-            db.Entry(dbChoice).State = EntityState.Modified;
+            _ChoiceRepository.Update(dbChoice);
 
             try
             {
-                db.SaveChanges();
+                _unitOfWork.Commit();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ChoiceExists(id))
                 {
@@ -77,7 +82,7 @@ namespace Snowflake.Api.Controllers
 
         // POST: api/Choices
         [ResponseType(typeof(Choice))]
-        public IHttpActionResult PostChoice(ChoiceModel choice)
+        public IHttpActionResult PostChoice(ChoiceModel Choice)
         {
             if (!ModelState.IsValid)
             {
@@ -85,44 +90,35 @@ namespace Snowflake.Api.Controllers
             }
 
             var newChoice = new Choice();
-            newChoice.Update(choice);
+            newChoice.Update(Choice);
 
-            db.Choices.Add(newChoice);
-            db.SaveChanges();
+            _ChoiceRepository.Add(newChoice);
+            _unitOfWork.Commit();
 
-            choice.ChoiceId = newChoice.ChoiceId;
+            Choice.ChoiceId = newChoice.ChoiceId;
 
-            return CreatedAtRoute("DefaultApi", new { id = choice.ChoiceId }, choice);
+            return CreatedAtRoute("DefaultApi", new { id = Choice.ChoiceId }, Choice);
         }
 
         // DELETE: api/Choices/5
         [ResponseType(typeof(Choice))]
         public IHttpActionResult DeleteChoice(int id)
         {
-            Choice choice = db.Choices.Find(id);
-            if (choice == null)
+            Choice Choice = _ChoiceRepository.GetById(id);
+            if (Choice == null)
             {
                 return NotFound();
             }
 
-            db.Choices.Remove(choice);
-            db.SaveChanges();
+            _ChoiceRepository.Delete(Choice);
+            _unitOfWork.Commit();
 
-            return Ok(Mapper.Map<ChoiceModel>(choice));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return Ok(Mapper.Map<ChoiceModel>(Choice));
         }
 
         private bool ChoiceExists(int id)
         {
-            return db.Choices.Count(e => e.ChoiceId == id) > 0;
+            return _ChoiceRepository.Any(r => r.ChoiceId == id);
         }
     }
 }
