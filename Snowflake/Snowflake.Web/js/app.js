@@ -1,4 +1,4 @@
-﻿angular.module('app', ['ngResource', 'ui.router', 'LocalStorageModule', 'irontec.simpleChat']);
+﻿angular.module('app', ['ngResource', 'ui.router', 'LocalStorageModule', 'irontec.simpleChat', 'ng-Aria']);
 
 angular.module('app').value('apiUrl', 'http://localhost:54844/api/');
 
