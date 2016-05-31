@@ -35,7 +35,6 @@ namespace Snowflake.Api
             Mapper.CreateMap<Participation, ParticipationModel>();
             Mapper.CreateMap<SnowflakeUser, SnowflakeUserModel>();
             Mapper.CreateMap<Thought, ThoughtModel>();
-
         }
     }
 }
